@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>InstaRecover — Instagram Account Recovery</title>
+<style>
+  :root {
+    /* --- Design tokens (Instagram help-center palette) --- */
+    --primary-button: #0095F6;
+    --primary-button-pressed: #77A7FF;
+    --success: #1DAA61;
+    --success-badge: #31A24C;
+    --danger: #E41E3F;
+    --secondary-button: #344854;
+    --secondary-floating: #4B4C4F;
+    --secondary-on-color: #E9EAEB;
+    --input-bg: #F0F2F5;
+    --input-bg-white: #FFFFFF;
+    --focus: #0040DC;
+    --focus-pink: #D24294;
+    --link-blue: #2D88FF;
+    --text-primary-on-dark: #E3E3E3;
+    --text-secondary: #1C1E21;
+    --deemphasized: #686A6E;
+
+    /* --- Spacing (4px base) --- */
+    --space-1: 2px;
+    --space-2: 4px;
+    --space-3: 5px;
+    --space-4: 6px;
+    --space-5: 7px;
+    --space-6: 8px;
+    --space-7: 10px;
+    --space-8: 12px;
+    --space-9: 16px;
+    --space-10: 24px;
+    --space-12: 30px;
+    --space-13: 40px;
+    --space-14: 60px;
+
+    /* --- Shapes --- */
+    --radius-sm: 4px;
+    --radius-lg: 6px;
+    --radius-xl: 16px;
+    --radius-full: 50%;
+
+    /* --- Typography --- */
+    --font-stack: system-ui, "SF Pro Text", "Segoe UI", Times, sans-serif;
+    --fs-sm: 12px;
+    --fs-base: 15px;
+    --fs-lg: 17px;
+    --fs-xl: 20px;
+    --fs-2xl: 24px;
+
+    --shadow-sm: rgba(0,0,0,0.1) 4px 0px 4px -2px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-stack);
+    font-size: var(--fs-base);
+    line-height: 1.5;
+    color: var(--text-secondary);
+    background: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--primary-button); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .container { max-width: 720px; margin: 0 auto; padding: 0 var(--space-9); }
+
+  /* ---------- Header ---------- */
+  header {
+    border-bottom: 1px solid #e6e6e6;
+    background: #fff;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  .logo { display: flex; align-items: center; gap: var(--space-6); font-weight: 700; font-size: var(--fs-lg); }
+  .logo .mark {
+    width: 34px; height: 34px; border-radius: var(--radius-lg);
+    background: linear-gradient(45deg, #F58529, #DD2A7B, #8134AF, #515BD4);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 18px;
+  }
+  .nav-links { display: flex; gap: var(--space-10); align-items: center; }
+  .nav-links a { color: var(--text-secondary); font-weight: 600; font-size: var(--fs-base); }
+  .nav-links a:hover { color: var(--primary-button); text-decoration: none; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    text-align: center;
+    padding: var(--space-14) 0 var(--space-13);
+    background: linear-gradient(180deg, #fafafa 0%, #fff 100%);
+  }
+  .hero .badge {
+    display: inline-block; background: var(--input-bg); color: var(--text-secondary);
+    font-size: var(--fs-sm); font-weight: 600; padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-full); margin-bottom: var(--space-9);
+  }
+  .hero h1 { font-size: 32px; font-weight: 700; line-height: 1.2; margin-bottom: var(--space-8); }
+  .hero h1 span { color: var(--primary-button); }
+  .hero p { color: var(--deemphasized); font-size: var(--fs-lg); max-width: 560px; margin: 0 auto; }
+
+  .trust-strip {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-9);
+    margin-top: var(--space-10);
+  }
+  .trust-strip .item { display: flex; align-items: center; gap: var(--space-4); font-size: var(--fs-sm); font-weight: 600; color: var(--deemphasized); }
+  .dot { width: 8px; height: 8px; border-radius: var(--radius-full); background: var(--success); }
+
+  /* ---------- Steps ---------- */
+  .steps { padding: var(--space-13) 0; background: #fff; }
+  .section-title { text-align: center; font-size: var(--fs-2xl); font-weight: 700; margin-bottom: var(--space-8); }
+  .section-sub { text-align: center; color: var(--deemphasized); margin-bottom: var(--space-13); }
+  .step-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-9); }
+  .step {
+    background: #fafafa; border: 1px solid #e6e6e6; border-radius: var(--radius-xl);
+    padding: var(--space-10); text-align: center;
+  }
+  .step .num {
+    width: 36px; height: 36px; border-radius: var(--radius-full); background: var(--primary-button);
+    color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto var(--space-8);
+  }
+  .step h3 { font-size: var(--fs-lg); margin-bottom: var(--space-4); }
+  .step p { font-size: var(--fs-sm); color: var(--deemphasized); }
+
+  /* ---------- Form card ---------- */
+  .form-section { padding: var(--space-13) 0; background: #fafafa; }
+  .card {
+    background: #fff; border: 1px solid #e6e6e6; border-radius: var(--radius-xl);
+    padding: var(--space-13); max-width: 560px; margin: 0 auto;
+  }
+  .card h2 { font-size: var(--fs-xl); margin-bottom: var(--space-2); }
+  .card .hint { color: var(--deemphasized); font-size: var(--fs-sm); margin-bottom: var(--space-10); }
+
+  .field { margin-bottom: var(--space-9); }
+  .field label { display: block; font-weight: 600; font-size: var(--fs-sm); margin-bottom: var(--space-4); }
+  .field label .req { color: var(--danger); }
+  .field input, .field select, .field textarea {
+    width: 100%; min-height: 44px; padding: var(--space-7) var(--space-8);
+    border: 1px solid #d0d0d0; border-radius: var(--radius-sm);
+    font-size: 16px; font-family: inherit;
+    background: var(--input-bg-white); color: var(--text-secondary);
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px rgba(0, 64, 220, 0.15);
+  }
+  .field textarea { resize: vertical; min-height: 90px; }
+  .field .err { color: var(--danger); font-size: var(--fs-sm); margin-top: var(--space-2); display: none; }
+  .field.invalid input, .field.invalid select, .field.invalid textarea { border-color: var(--danger); }
+  .field.invalid .err { display: block; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-4);
+    width: 100%; min-height: 48px; padding: var(--space-8) var(--space-9);
+    border: none; border-radius: var(--radius-sm);
+    font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit;
+    transition: background 0.2s ease, transform 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-primary { background: var(--primary-button); color: #fff; }
+  .btn-primary:hover { background: var(--focus); }
+  .btn-primary:active { background: var(--primary-button-pressed); }
+  .btn-primary:focus-visible { outline: 3px solid var(--focus-pink); outline-offset: 2px; }
+  .btn:disabled { background: var(--secondary-on-color); color: var(--deemphasized); cursor: not-allowed; }
+  .btn:active { transform: scale(0.98); }
+
+  /* ---------- Payment panel ---------- */
+  .payment { margin-top: var(--space-9); padding-top: var(--space-9); border-top: 1px solid #e6e6e6; }
+  .price-row {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--input-bg); border-radius: var(--radius-sm); padding: var(--space-8) var(--space-9);
+    margin-bottom: var(--space-8);
+  }
+  .price-row .label { font-weight: 600; font-size: var(--fs-sm); color: var(--deemphasized); }
+  .price-row .amount { font-size: var(--fs-xl); font-weight: 700; }
+  .price-row .amount small { font-size: var(--fs-sm); font-weight: 500; color: var(--deemphasized); }
+  .paypal-note { font-size: var(--fs-sm); color: var(--deemphasized); margin: var(--space-8) 0; text-align: center; }
+
+  .btn-paypal { background: #FFC439; color: #003087; }
+  .btn-paypal:hover { background: #f2ba37; }
+  .btn-paypal:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  /* ---------- FAQ ---------- */
+  .faq { padding: var(--space-13) 0; }
+  .faq details {
+    border: 1px solid #e6e6e6; border-radius: var(--radius-lg); margin-bottom: var(--space-8);
+    background: #fff;
+  }
+  .faq summary {
+    padding: var(--space-9); font-weight: 600; cursor: pointer; list-style: none;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; font-size: 20px; color: var(--primary-button); }
+  .faq details[open] summary::after { content: "–"; }
+  .faq details p { padding: 0 var(--space-9) var(--space-9); color: var(--deemphasized); font-size: var(--fs-base); }
+
+  /* ---------- Footer ---------- */
+  footer { background: var(--secondary-button); color: var(--text-primary-on-dark); padding: var(--space-13) 0 var(--space-10); }
+  footer .container { text-align: center; }
+  footer .disclaimer { font-size: var(--fs-sm); color: #b0b6bb; margin-top: var(--space-9); line-height: 1.6; }
+
+  /* ---------- Success ---------- */
+  .success-box {
+    display: none; text-align: center; padding: var(--space-13) var(--space-9);
+    background: #fff; border: 1px solid #e6e6e6; border-radius: var(--radius-xl);
+    max-width: 560px; margin: 0 auto;
+  }
+  .success-box .check {
+    width: 56px; height: 56px; border-radius: var(--radius-full); background: var(--success-badge);
+    color: #fff; font-size: 30px; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto var(--space-9);
+  }
+  .success-box h2 { margin-bottom: var(--space-8); }
+  .success-box p { color: var(--deemphasized); margin-bottom: var(--space-9); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 640px) {
+    .step-grid { grid-template-columns: 1fr; }
+    .hero { padding: var(--space-13) 0 var(--space-10); }
+    .hero h1 { font-size: 26px; }
+    .hero p { font-size: var(--fs-base); }
+    .nav { height: 54px; }
+    .nav-links { display: none; }
+    .card { padding: var(--space-10) var(--space-9); }
+    .trust-strip { gap: var(--space-6); justify-content: flex-start; }
+    .trust-strip .item { width: calc(50% - var(--space-6)); }
+    .price-row { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
+    .section-title { font-size: var(--fs-xl); }
+    .steps, .form-section, .faq { padding: var(--space-10) 0; }
+    .logo { font-size: var(--fs-base); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <div class="logo"><span class="mark">IG</span> InstaRecover</div>
+    <nav class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#apply">Apply</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <span class="badge">24–48h average recovery time</span>
+    <h1>Get your hacked or lost <span>Instagram account</span> back</h1>
+    <p>We help you recover disabled, hacked, and password-lost Instagram accounts with a simple application and a flat fee.</p>
+    <div class="trust-strip">
+      <span class="item"><span class="dot"></span> Verified process</span>
+      <span class="item"><span class="dot"></span> Flat ₹1100 fee</span>
+      <span class="item"><span class="dot"></span> PayPal only</span>
+      <span class="item"><span class="dot"></span> Email updates</span>
+    </div>
+  </div>
+</section>
+
+<section class="steps" id="how">
+  <div class="container">
+    <h2 class="section-title">How it works</h2>
+    <p class="section-sub">Three simple steps to get your account back.</p>
+    <div class="step-grid">
+      <div class="step">
+        <div class="num">1</div>
+        <h3>Submit details</h3>
+        <p>Fill the form with your email, Instagram ID, and the reason for recovery.</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h3>Pay ₹1100</h3>
+        <p>Complete a flat ₹1100 payment securely via PayPal.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h3>Account recovered</h3>
+        <p>Our team works on your case and updates you over email.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="form-section" id="apply">
+  <div class="container">
+    <form class="card" id="recoveryForm" novalidate>
+      <h2>Start your recovery</h2>
+      <p class="hint">All fields are required. We only contact you on the email you provide.</p>
+
+      <div class="field" id="f-email">
+        <label for="email">Email <span class="req">*</span></label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" />
+        <span class="err">Please enter a valid email address.</span>
+      </div>
+
+      <div class="field" id="f-username">
+        <label for="username">Instagram ID / Username <span class="req">*</span></label>
+        <input type="text" id="username" name="username" placeholder="e.g. @yourhandle" />
+        <span class="err">Please enter your Instagram username.</span>
+      </div>
+
+      <div class="field" id="f-reason">
+        <label for="reason">Reason <span class="req">*</span></label>
+        <select id="reason" name="reason">
+          <option value="" selected disabled>Select a reason…</option>
+          <option value="hacked">Hacked account</option>
+          <option value="lost">Lost / disabled account</option>
+          <option value="password">Password reset issue</option>
+          <option value="other">Other</option>
+        </select>
+        <span class="err">Please choose a reason.</span>
+      </div>
+
+      <div class="field" id="f-details">
+        <label for="details">Describe the issue <span class="req">*</span></label>
+        <textarea id="details" name="details" placeholder="Tell us what happened — when you lost access, any error messages, etc."></textarea>
+        <span class="err">Please add a short description (at least 20 characters).</span>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Proceed to payment</button>
+
+      <div class="payment" id="paymentPanel" style="display:none;">
+        <div class="price-row">
+          <span class="label">Recovery fee (per account)</span>
+          <span class="amount">₹1100 <small>INR</small></span>
+        </div>
+        <button type="button" class="btn btn-paypal" id="paypalBtn">
+          Pay ₹1100 with PayPal
+        </button>
+        <p class="paypal-note">Payment is processed securely via PayPal only.</p>
+      </div>
+    </form>
+
+    <div class="success-box" id="successBox">
+      <div class="check">✓</div>
+      <h2>Application submitted</h2>
+      <p>Your details are ready. Complete the PayPal payment to start your recovery.</p>
+      <p style="font-size: var(--fs-sm);">We'll email you a confirmation and case updates to the address you provided.</p>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="container">
+    <h2 class="section-title">Frequently asked questions</h2>
+    <details>
+      <summary>How long does recovery take?</summary>
+      <p>Most cases are resolved within 24–48 hours. Complex disabled-account cases can take up to 3–5 working days.</p>
+    </details>
+    <details>
+      <summary>What do you need from me?</summary>
+      <p>Just the email linked to the account, your Instagram username, the reason, and a short description of the issue.</p>
+    </details>
+    <details>
+      <summary>How do I pay?</summary>
+      <p>We accept PayPal only. The flat fee is ₹1100 INR per account.</p>
+    </details>
+    <details>
+      <summary>What if recovery fails?</summary>
+      <p>If we cannot recover your account, your payment is refunded in full via PayPal.</p>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="logo" style="justify-content:center; color:#fff;"><span class="mark">IG</span> InstaRecover</div>
+    <p class="disclaimer">
+      InstaRecover is an independent third-party support service and is not affiliated with, endorsed by,
+      or sponsored by Instagram or Meta Platforms, Inc. Instagram is a trademark of Meta Platforms, Inc.
+      Recovery timelines vary by case and are not guaranteed.
+    </p>
+  </div>
+</footer>
+
+<script>
+  const PAYPAL_LINK = "https://www.paypal.com/paypalme/YOUR_USERNAME/1100"; // TODO: replace YOUR_USERNAME with your PayPal.me handle
+
+  const form = document.getElementById('recoveryForm');
+  const paymentPanel = document.getElementById('paymentPanel');
+  const successBox = document.getElementById('successBox');
+  const paypalBtn = document.getElementById('paypalBtn');
+
+  function setInvalid(id, invalid) {
+    document.getElementById(id).classList.toggle('invalid', invalid);
+  }
+
+  function validate() {
+    const email = document.getElementById('email').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const reason = document.getElementById('reason').value;
+    const details = document.getElementById('details').value.trim();
+
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const usernameOk = username.length >= 2;
+    const reasonOk = reason !== '';
+    const detailsOk = details.length >= 20;
+
+    setInvalid('f-email', !emailOk);
+    setInvalid('f-username', !usernameOk);
+    setInvalid('f-reason', !reasonOk);
+    setInvalid('f-details', !detailsOk);
+
+    return emailOk && usernameOk && reasonOk && detailsOk;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!validate()) return;
+
+    // Show the payment panel inside the form
+    paymentPanel.style.display = 'block';
+    paymentPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  paypalBtn.addEventListener('click', function () {
+    // Open PayPal (replace PAYPAL_LINK with your real PayPal.me link)
+    window.open(PAYPAL_LINK, '_blank');
+    form.style.display = 'none';
+    successBox.style.display = 'block';
+    successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  // Clear error state while typing
+  ['email', 'username', 'reason', 'details'].forEach(function (id) {
+    const el = document.getElementById(id);
+    el.addEventListener('input', function () {
+      setInvalid('f-' + id, false);
+    });
+  });
+</script>
+</body>
+</html>
